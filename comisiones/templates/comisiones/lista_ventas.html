@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Ventas y Comisiones</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2em; background-color: #f9f9f9; }
+        h1 { color: #333; }
+        form { background-color: #fff; padding: 1.5em; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 2em; display: flex; gap: 1em; align-items: center; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .totals { margin-top: 2em; padding: 1.5em; background-color: #e9ecef; border-radius: 8px; font-size: 1.1em; }
+        .totals p { margin: 0.5em 0; }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Ventas y Comisiones</h1>
+
+    <form method="get">
+        {{ form.as_p }}
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Vendedor</th>
+                <th>Fecha de Venta</th>
+                <th>Monto</th>
+                <th>Regla Aplicada</th>
+                <th>Comisión Calculada</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.vendedor }}</td>
+                <td>{{ venta.fecha_venta }}</td>
+                <td>${{ venta.monto|floatformat:2 }}</td>
+                <td>{{ venta.regla_aplicada|default:"Sin regla" }}</td>
+                <td>${{ venta.comision_calculada|floatformat:2|default:"0.00" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center;">No hay ventas para mostrar. Intenta añadir algunas desde el panel de Admin o cambia el rango de fechas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <p><strong>Total de Ventas Filtradas:</strong> ${{ total_ventas|floatformat:2 }}</p>
+        <p><strong>Total de Comisiones a Pagar:</strong> ${{ total_comisiones|floatformat:2 }}</p>
+    </div>
+
+</body>
+</html>
